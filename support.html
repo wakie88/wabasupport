@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support & Help Center — Wabacrobes: ALife Wallpaper</title>
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <style>
+    :root {
+      --bg: #07090f;
+      --card-bg: rgba(13, 19, 33, 0.85);
+      --border: rgba(0, 240, 255, 0.2);
+      --text: #e0e6ed;
+      --heading: #ffffff;
+      --accent-cyan: #00f0ff;
+      --accent-magenta: #ff007f;
+      --accent-lime: #39ff14;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.7;
+      padding: 30px 20px;
+    }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 30px;
+    }
+    header img {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+    }
+    h1 {
+      color: var(--heading);
+      font-size: 1.85rem;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      color: var(--accent-cyan);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    h2 {
+      color: var(--accent-cyan);
+      font-size: 1.3rem;
+      margin: 28px 0 12px;
+    }
+    h3 {
+      color: #fff;
+      font-size: 1.1rem;
+      margin: 18px 0 8px;
+    }
+    p, ul {
+      margin-bottom: 16px;
+      color: #c4d1de;
+    }
+    ul {
+      padding-left: 24px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    .faq-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .faq-card h3 {
+      margin-top: 0;
+      color: var(--accent-cyan);
+    }
+    a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    a:hover {
+      color: var(--accent-magenta);
+      text-decoration: underline;
+    }
+    .nav-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+    }
+    .nav-bar a {
+      color: #8da4be;
+      font-size: 0.9rem;
+    }
+    .nav-bar a:hover {
+      color: var(--accent-cyan);
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: #6b7f96;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-bar">
+      <a href="index.html">← Back to Overview</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+
+    <header>
+      <img src="assets/icon.png" alt="Wabacrobes Logo">
+      <div>
+        <h1>Support & FAQ</h1>
+        <div class="subtitle">Wabacrobes: ALife Wallpaper • Setup Guide & Troubleshooting</div>
+      </div>
+    </header>
+
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-card">
+      <h3>How do I apply Wabacrobes as my Android Live Wallpaper?</h3>
+      <p>Follow these quick steps:</p>
+      <ul>
+        <li><strong>Method A (Direct App):</strong> Open the <strong>Wabacrobes</strong> app from your app drawer and tap <strong>"Set Wallpaper"</strong>. Select whether to apply it to your Home screen or Home and Lock screens.</li>
+        <li><strong>Method B (System Settings):</strong> Long-press any empty area on your phone's Home screen &gt; tap <strong>Wallpapers</strong> (or Wallpaper & Style) &gt; select <strong>Live Wallpapers</strong> &gt; choose <strong>Wabacrobes</strong> &gt; tap <strong>Apply</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="faq-card">
+      <h3>Will this wallpaper drain my phone battery?</h3>
+      <p><strong>No.</strong> Wabacrobes features an Instant Sleep Engine: the exact millisecond your screen turns off or is covered by any full-screen application, the simulation loop pauses completely. CPU and GPU utilization drops to <strong>0%</strong> while the phone is locked or in your pocket.</p>
+    </div>
+
+    <div class="faq-card">
+      <h3>How do I interact with the microorganisms?</h3>
+      <ul>
+        <li><strong>Single Tap:</strong> Drops a cluster of glowing nutrient substance spores onto the petri dish. Nearby organisms will sense them and swarm to feed.</li>
+        <li><strong>Double Tap:</strong> Triggers an elastic radial shockwave that ripples across the dish, pushing organisms outward with rigid-body cellular physics.</li>
+      </ul>
+    </div>
+
+    <div class="faq-card">
+      <h3>What is "Mitosis" and how does learning work?</h3>
+      <p>Every Wabacrobe possesses an individual recurrent neural network with neuromodulated Hebbian synaptic learning. When an organism consumes 10 nutrient spores, it reaches replication capacity and splits into two daughter cells (mitosis), passing on learned synaptic weights with subtle genetic variations.</p>
+    </div>
+
+    <h2>Contact & Bug Reports</h2>
+    <p>Need additional assistance or want to suggest a feature? Reach out directly via our GitHub repository:</p>
+    <ul>
+      <li><strong>GitHub Issues:</strong> <a href="https://github.com/wakie88/wabasupport/issues">Submit a Question or Issue</a></li>
+      <li><strong>Repository:</strong> <a href="https://github.com/wakie88/wabasupport">https://github.com/wakie88/wabasupport</a></li>
+    </ul>
+
+    <footer>
+      © 2026 Wabacrobes. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>

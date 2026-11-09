@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wabacrobes — Autonomous ALife Live Wallpaper</title>
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <style>
+    :root {
+      --bg: #060912;
+      --card-bg: rgba(13, 19, 33, 0.82);
+      --border: rgba(0, 240, 255, 0.22);
+      --text: #e0e6ed;
+      --cyan: #00f0ff;
+      --magenta: #ff007f;
+      --lime: #39ff14;
+      --gold: #ffb800;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+    #sim-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: auto;
+    }
+    .content-overlay {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .clickable {
+      pointer-events: auto;
+    }
+    header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand img {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    }
+    .brand span {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+    nav a {
+      color: #8da4be;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    nav a:hover {
+      color: var(--cyan);
+    }
+    .hero {
+      max-width: 900px;
+      margin: 60px auto 40px;
+      text-align: center;
+      padding: 0 24px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid var(--cyan);
+      border-radius: 50px;
+      color: var(--cyan);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 3.2rem;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #ffffff 40%, #00f0ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tagline {
+      font-size: 1.25rem;
+      color: #a8b8cc;
+      max-width: 680px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 50px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), #00a2ff);
+      color: #060912;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.7);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      backdrop-filter: blur(10px);
+    }
+    .btn-secondary:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      transform: translateY(-2px);
+    }
+    .interactive-tip {
+      font-size: 0.9rem;
+      color: #637792;
+      margin-bottom: 60px;
+    }
+    .interactive-tip strong {
+      color: var(--lime);
+    }
+    .features-grid {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--cyan);
+    }
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 14px;
+      display: inline-block;
+    }
+    .feature-card h3 {
+      font-size: 1.25rem;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      color: #9cb0c5;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .preview-section {
+      max-width: 980px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .preview-section h2 {
+      font-size: 2.2rem;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .screenshots-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-top: 36px;
+    }
+    .screen-mockup {
+      width: 270px;
+      border-radius: 28px;
+      border: 4px solid rgba(0, 240, 255, 0.4);
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.25);
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    .screen-mockup:hover {
+      transform: scale(1.03);
+    }
+    .screen-mockup img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      color: #637792;
+      font-size: 0.9rem;
+    }
+    footer a {
+      color: #8da4be;
+      text-decoration: none;
+    }
+    footer a:hover {
+      color: var(--cyan);
+    }
+    @media (max-width: 768px) {
+      h1 { font-size: 2.3rem; }
+      .tagline { font-size: 1.1rem; }
+      nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Interactive ALife Background Simulation -->
+  <canvas id="sim-canvas"></canvas>
+
+  <div class="content-overlay">
+    <header class="clickable">
+      <a href="index.html" class="brand">
+        <img src="assets/icon.png" alt="Wabacrobes Logo">
+        <span>WABACROBES</span>
+      </a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#preview">Screenshots</a>
+        <a href="support.html">Support & FAQ</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="https://github.com/wakie88/Wabacrobes" target="_blank">GitHub</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="badge">Artificial Life Live Wallpaper</div>
+      <h1>Living, Evolving Neural Microorganisms on Your Screen</h1>
+      <p class="tagline">
+        An interactive procedural ALife ecosystem inspired by classic Samsung Galaxy "Microbes" and Black Mirror's "The Throng". Watch autonomous neon cells learn, swarm, and reproduce in a real-time petri dish.
+      </p>
+
+      <div class="btn-group clickable">
+        <a href="https://play.google.com/store/apps/details?id=com.hanyollo.wabacrobes" class="btn btn-primary" target="_blank">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+          </svg>
+          Google Play Store ($1.99)
+        </a>
+        <a href="https://github.com/wakie88/Wabacrobes/releases/tag/v0.1" class="btn btn-secondary" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/>
+          </svg>
+          Direct APK / GitHub Releases
+        </a>
+      </div>
+
+      <p class="interactive-tip clickable">
+        💡 <strong>Interactive Demo:</strong> Tap or click anywhere on the background to feed nutrient spores. Double-click to unleash a radial shockwave!
+      </p>
+    </section>
+
+    <section id="features" class="features-grid clickable">
+      <div class="feature-card">
+        <span class="feature-icon">🧠</span>
+        <h3>True ALife Neuroevolution</h3>
+        <p>Every Wabacrobe runs an individual recurrent neural network with neuromodulated Hebbian synaptic learning. Organisms learn continuously through Active Inference and dopamine rewards.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>Zero-Drain Standby</h3>
+        <p>Instant sleep engine immediately pauses physics solvers, neural updates, and rendering the moment your screen locks or is occluded. 0% CPU and GPU drain while asleep.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🧬</span>
+        <h3>10-Substance Mitosis</h3>
+        <p>When a microbe consumes 10 pieces of nutrient substance, it reaches full replication capacity and cleanly divides into two daughter cells, passing on learned synaptic weights.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🛡️</span>
+        <h3>Rigid-Body Cellular Physics</h3>
+        <p>Advanced non-overlapping circle constraint solver ensures organic packing and fluid collisions with zero clipping or boundary glitches across any aspect ratio.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <h3>7 Vivid Neon Colors & Dual Themes</h3>
+        <p>Vibrant Cyan, Magenta, Electric Lime, Solar Gold, Ultraviolet, Coral Red, and Aqua with concentric elder rings. Toggle between Dark Void and Light Lab modes.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3>100% Offline & Private</h3>
+        <p>Requires zero internet permissions. Zero advertisements, zero user tracking, zero data collection. Runs entirely local on your device.</p>
+      </div>
+    </section>
+
+    <section id="preview" class="preview-section clickable">
+      <h2>Live on Android</h2>
+      <p style="color: #8da4be;">Captured directly on Samsung One UI running Android 15</p>
+
+      <div class="screenshots-container">
+        <div class="screen-mockup">
+          <img src="assets/screenshot-1.png" alt="Wabacrobes Home Screen Live Wallpaper">
+        </div>
+        <div class="screen-mockup">
+          <img src="assets/screenshot-2.png" alt="Wabacrobes Wallpaper Preview Screen">
+        </div>
+      </div>
+    </section>
+
+    <footer class="clickable">
+      <div>© 2026 Wabacrobes • Dennis (Hanyollo)</div>
+      <div style="display: flex; gap: 20px;">
+        <a href="support.html">Support & Help</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="https://github.com/wakie88/Wabacrobes" target="_blank">Source Code</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Simulation scripts -->
+  <script src="assets/js/alife-brain.js"></script>
+  <script src="assets/js/physics-solver.js"></script>
+  <script src="assets/js/wabacrobes-engine.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const canvas = document.getElementById('sim-canvas');
+      const engine = new WabacrobesEngine(canvas, {
+        targetFps: 60,
+        enableTouch: true,
+        defaultTheme: 'dark'
+      });
+      window.simEngine = engine;
+
+      // Single tap feeding on canvas click
+      let lastTap = 0;
+      canvas.addEventListener('pointerdown', (e) => {
+        const now = Date.now();
+        if (now - lastTap < 300) {
+          engine.shockwave(e.clientX, e.clientY);
+        } else {
+          engine.feed(e.clientX, e.clientY);
+        }
+        lastTap = now;
+      });
+    });
+  </script>
+</body>
+</html>
